@@ -563,9 +563,10 @@
           <h5>Quiero agregar mis datos</h5>
           <p class="don-form-note">Déjanos tu información para poder contactarte y agradecerte personalmente por tu donación.</p>
 
-          <form name="donacion-form" method="POST" action="https://formspree.io/f/myeyeeze" id="donationForm">
+          <form name="donacion-form" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="donationForm">
+            <input type="hidden" name="form-name" value="donacion-form">
             <p style="display:none;">
-              <label>No llenar si eres humano: <input name="_gotcha"></label>
+              <label>No llenar si eres humano: <input name="bot-field"></label>
             </p>
             <div class="field">
               <label for="donorName">Nombre completo</label>
@@ -617,9 +618,10 @@
     </p>
 
     <div class="pregunta-form-wrap fade-in" style="max-width:560px;margin:0 auto;">
-      <form name="pregunta-form" method="POST" action="https://formspree.io/f/xyeyeeye" id="preguntaForm">
+      <form name="pregunta-form" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="preguntaForm">
+        <input type="hidden" name="form-name" value="pregunta-form">
         <p style="display:none;">
-          <label>No llenar si eres humano: <input name="_gotcha"></label>
+          <label>No llenar si eres humano: <input name="bot-field"></label>
         </p>
         <div class="field">
           <label for="preguntaNombre">Tu nombre (opcional)</label>
@@ -645,9 +647,9 @@
     <h2 class="section-title fade-in">Escucha nuestro último episodio</h2>
 
     <div class="player-hero fade-in" style="text-align:center;">
-      <span class="ep-badge-top">EP4: Un Nuevo Templo</span>
+      <span class="ep-badge-top">EP5: La Nueva Humanidad</span>
       <div class="yt-frame-shell" style="margin-bottom:0;">
-        <iframe class="yt-frame" src="https://www.youtube-nocookie.com/embed/rPrqLzwJSPA" title="Podcast Efesios: Plan Eterno - EP4: Un Nuevo Templo" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        <iframe class="yt-frame" src="https://www.youtube-nocookie.com/embed/CYsmTKAigT4" title="Podcast Efesios: Plan Eterno - EP5: La Nueva Humanidad" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
       </div>
     </div>
 
@@ -667,7 +669,7 @@
 
     <div class="yt-wrap fade-in">
       <div class="yt-frame-shell">
-        <iframe class="yt-frame" src="https://www.youtube-nocookie.com/embed/4PndxKz4k5E" title="Entrenamiento Efesios: Plan Eterno" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        <iframe class="yt-frame" src="https://www.youtube-nocookie.com/embed/9N0Mi_rrm38" title="Entrenamiento Efesios: Plan Eterno" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
       </div>
       <a href="https://youtube.com/playlist?list=PLWB8Sv6gxrfk" target="_blank" rel="noopener" class="cta-pill" style="border-color:var(--white);color:var(--white);">Ver el Playlist de entrenamiento en YouTube</a>
     </div>
@@ -773,7 +775,7 @@
     }
   });
 
-  // Formulario de donación (Formspree, envío sin recargar la página)
+  // Formulario de donación (Netlify Forms, envío sin recargar la página)
   const donationForm = document.getElementById('donationForm');
   const donationSuccess = document.getElementById('donationSuccess');
   const donationError = document.getElementById('donationError');
@@ -781,52 +783,20 @@
     donationForm.addEventListener('submit', e => {
       e.preventDefault();
       const formData = new FormData(donationForm);
+      const params = new URLSearchParams(formData).toString();
       donationSuccess.classList.remove('show');
       donationError.classList.remove('show');
-      fetch(donationForm.action, {
+      fetch('/', {
         method: 'POST',
-        body: formData,
-        headers: { 'Accept': 'application/json' }
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: params
       })
-        .then(response => {
-          if (response.ok) {
-            donationSuccess.classList.add('show');
-            donationForm.reset();
-          } else {
-            donationError.classList.add('show');
-          }
+        .then(() => {
+          donationSuccess.classList.add('show');
+          donationForm.reset();
         })
         .catch(() => {
           donationError.classList.add('show');
-        });
-    });
-  }
-
-  // Formulario de preguntas (Formspree, envío sin recargar la página)
-  const preguntaForm = document.getElementById('preguntaForm');
-  const preguntaSuccess = document.getElementById('preguntaSuccess');
-  const preguntaError = document.getElementById('preguntaError');
-  if (preguntaForm) {
-    preguntaForm.addEventListener('submit', e => {
-      e.preventDefault();
-      const formData = new FormData(preguntaForm);
-      preguntaSuccess.classList.remove('show');
-      preguntaError.classList.remove('show');
-      fetch(preguntaForm.action, {
-        method: 'POST',
-        body: formData,
-        headers: { 'Accept': 'application/json' }
-      })
-        .then(response => {
-          if (response.ok) {
-            preguntaSuccess.classList.add('show');
-            preguntaForm.reset();
-          } else {
-            preguntaError.classList.add('show');
-          }
-        })
-        .catch(() => {
-          preguntaError.classList.add('show');
         });
     });
   }
