@@ -618,11 +618,7 @@
     </p>
 
     <div class="pregunta-form-wrap fade-in" style="max-width:560px;margin:0 auto;">
-      <form name="pregunta-form" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="preguntaForm">
-        <input type="hidden" name="form-name" value="pregunta-form">
-        <p style="display:none;">
-          <label>No llenar si eres humano: <input name="bot-field"></label>
-        </p>
+      <form action="https://formspree.io/f/xyeyeeye" method="POST" id="preguntaForm">
         <div class="field">
           <label for="preguntaNombre">Tu nombre (opcional)</label>
           <input id="preguntaNombre" name="Nombre" type="text" placeholder="Déjalo en blanco para ser anónimo">
@@ -797,6 +793,35 @@
         })
         .catch(() => {
           donationError.classList.add('show');
+        });
+    });
+  }
+
+  // Formulario de Preguntas (Formspree, envío sin recargar la página)
+  const preguntaForm = document.getElementById('preguntaForm');
+  const preguntaSuccess = document.getElementById('preguntaSuccess');
+  const preguntaError = document.getElementById('preguntaError');
+  if (preguntaForm) {
+    preguntaForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const formData = new FormData(preguntaForm);
+      preguntaSuccess.classList.remove('show');
+      preguntaError.classList.remove('show');
+      fetch(preguntaForm.action, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: formData
+      })
+        .then(response => {
+          if (response.ok) {
+            preguntaSuccess.classList.add('show');
+            preguntaForm.reset();
+          } else {
+            preguntaError.classList.add('show');
+          }
+        })
+        .catch(() => {
+          preguntaError.classList.add('show');
         });
     });
   }
